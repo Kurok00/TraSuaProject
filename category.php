@@ -36,6 +36,39 @@ include 'configs/add_cart.php';
 
    <?php include 'configs/user_header.php'; ?>
 
+   <section class="category">
+
+      <h1 class="title">Loại sản phẩm</h1>
+      <?php
+      $select_categories = $conn->prepare("SELECT * FROM `category`");
+      $select_categories->execute();
+      if ($select_categories->rowCount() > 0) {
+         $categories = $select_categories->fetchAll(PDO::FETCH_ASSOC);
+      }
+      ?>
+
+
+      <div class="box-container">
+         <?php
+         if (!empty($categories)) {
+            foreach ($categories as $category) {
+         ?>
+               <a href="category.php?category=<?= $category['category_name']; ?>" class="box">
+                  <img src="templates/uploaded_img/category_img/<?= $category['image']; ?>" alt="">
+                  <h3><?= $category['category_name']; ?></h3>
+               </a>
+         <?php
+            }
+         } else {
+            echo '<p class="empty">No categories available!</p>';
+         }
+         ?>
+      </div>
+
+
+
+   </section>
+
    <section class="products">
 
       <h1 class="title">Danh mục sản phẩm</h1>

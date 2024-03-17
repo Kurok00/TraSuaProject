@@ -34,9 +34,9 @@ function send_pass_reset_email($email, $token)
     $mail->Host = "smtp.gmail.com";
     $mail->Port = 465; // or 587
     $mail->IsHTML(true);
-    $mail->Username = "yukata7951936@gmail.com";
-    $mail->Password = "dgjg kcmf qjfn lbgu";
-    $mail->SetFrom("yukata7951936@gmail.com");
+    $mail->Username = "anvnt96@gmail.com";
+    $mail->Password = "ghgf pbnh amyi uwde";
+    $mail->SetFrom("anvnt96@gmail.com");
     $mail->addAddress($email);
     $mail->Subject = "Update new password";
     $mail->Body = "Click vào đây để đặt lại mật khẩu: http://localhost/TraSuaProject/password.php?reset_token=$token";

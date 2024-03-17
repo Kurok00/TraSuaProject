@@ -7,7 +7,7 @@ session_start();
 if (isset($_SESSION['user_id'])) {
    $user_id = $_SESSION['user_id'];
 } else {
-   $user_id = '';
+   $user_id = null;
 };
 
 if (isset($_POST['send'])) {
@@ -21,19 +21,26 @@ if (isset($_POST['send'])) {
    $msg = $_POST['msg'];
    $msg = filter_var($msg, FILTER_SANITIZE_STRING);
 
-   $select_message = $conn->prepare("SELECT * FROM `messages` WHERE name = ? AND email = ? AND number = ? AND message = ?");
-   $select_message->execute([$name, $email, $number, $msg]);
+   // Kiểm tra xem user_id có hợp lệ hay không
+   if ($user_id !== null) {
+      $select_message = $conn->prepare("SELECT * FROM `messages` WHERE name = ? AND email = ? AND number = ? AND message = ? AND user_id = ?");
+      $select_message->execute([$name, $email, $number, $msg, $user_id]);
 
-   if ($select_message->rowCount() > 0) {
-      $message[] = 'Đã gửi tin nhắn rồi !';
+      if ($select_message->rowCount() > 0) {
+         $message[] = 'Đã gửi tin nhắn rồi !';
+      } else {
+
+         $insert_message = $conn->prepare("INSERT INTO `messages` (user_id, name, email, number, message) VALUES (?, ?, ?, ?, ?)");
+         $insert_message->execute([$user_id, $name, $email, $number, $msg]);
+
+         $message[] = 'Đã gửi tin nhắn thành công !';
+      }
    } else {
-
-      $insert_message = $conn->prepare("INSERT INTO `messages`(user_id, name, email, number, message) VALUES(?,?,?,?,?)");
-      $insert_message->execute([$user_id, $name, $email, $number, $msg]);
-
-      $message[] = 'Đã gửi tin nhắn thành công !';
+      // Xử lý khi user_id không hợp lệ
+      $message[] = 'Không tìm thấy thông tin người dùng! Xin hãy đăng nhập';
    }
 }
+
 
 ?>
 
